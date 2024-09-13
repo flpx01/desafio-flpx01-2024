@@ -1,4 +1,3 @@
-// Dados dos recintos e animais
 const recintos = [
   { numero: 1, bioma: "savana", tamanhoTotal: 10, animais: [{ especie: "MACACO", quantidade: 3, tamanho: 1 }] },
   { numero: 2, bioma: "floresta", tamanhoTotal: 5, animais: [] },
