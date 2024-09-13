@@ -23,12 +23,10 @@ class RecintosZoo {
   }
 
   analisaRecintos(animal, quantidade) {
-    // Verifica se o animal é válido
     if (!this.animais[animal]) {
       return { erro: "Animal inválido" };
     }
 
-    // Verifica se a quantidade é válida
     if (quantidade <= 0) {
       return { erro: "Quantidade inválida" };
     }
@@ -36,27 +34,24 @@ class RecintosZoo {
     const { tamanho, biomas, carnivoro } = this.animais[animal];
     let recintosViaveis = [];
 
-    // Analisa cada recinto para verificar se é viável
     for (const recinto of this.recintos) {
       const espacoOcupado = recinto.animais.reduce((total, a) => total + a.quantidade * a.tamanho, 0);
       const espacoDisponivel = recinto.tamanhoTotal - espacoOcupado;
 
-      // Verifica se o bioma do recinto é adequado
-      const biomaValido = biomas.includes(recinto.bioma) || (biomas.includes("rio") && recinto.bioma === "savana e rio");
-
-      // Verifica a necessidade de espaço extra
+      const biomaValido = biomas.includes(recinto.bioma) || (recinto.bioma === "savana e rio");
       const precisaDeEspacoExtra = recinto.animais.some(a => a.especie !== animal);
       const espacoNecessario = quantidade * tamanho + (precisaDeEspacoExtra ? 1 : 0);
 
-      // Verifica regras de convivência
       const outrosAnimais = recinto.animais.filter(a => a.especie !== animal);
-      if (carnivoro && outrosAnimais.length > 0) continue;
 
-      if (animal === "HIPOPOTAMO" && outrosAnimais.length > 0 && recinto.bioma !== "savana e rio") continue;
+      if (carnivoro && outrosAnimais.length > 0) {
+        continue;
+      }
 
-      if (animal === "MACACO" && outrosAnimais.length === 0 && quantidade === 1) continue;
+      if (!carnivoro && recinto.animais.some(a => this.animais[a.especie].carnivoro)) {
+        continue; 
+      }
 
-      // Verifica se o recinto é viável
       if (biomaValido && espacoNecessario <= espacoDisponivel) {
         recintosViaveis.push({
           recintoStr: `Recinto ${recinto.numero} (espaço livre: ${espacoDisponivel - espacoNecessario} total: ${recinto.tamanhoTotal})`,
@@ -76,4 +71,3 @@ class RecintosZoo {
 }
 
 export { RecintosZoo as RecintosZoo };
-
